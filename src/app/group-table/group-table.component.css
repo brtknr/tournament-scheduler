@@ -1,0 +1,53 @@
+/* ...empty or custom styles... */
+:host {
+  display: block;
+}
+
+.league-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.league-table thead {
+  background: #f7f7f7;
+  font-weight: bold;
+}
+
+.league-table th, .league-table td {
+  padding: 0.5rem 0.7rem;
+  text-align: center;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.league-table th {
+  color: #444;
+  font-size: 0.95em;
+  letter-spacing: 0.04em;
+}
+
+.league-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.league-table .team-name {
+  text-align: left;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.team-flag {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  margin-right: 8px;
+  border: 1px solid #ddd;
+  vertical-align: middle;
+  background: #eee;
+}

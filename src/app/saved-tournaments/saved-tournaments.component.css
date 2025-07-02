@@ -1,0 +1,5 @@
+/* İsteğe bağlı stil */
+:host {
+  display: block;
+  margin-top: 24px;
+}

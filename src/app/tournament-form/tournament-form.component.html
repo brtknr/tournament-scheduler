@@ -1,0 +1,213 @@
+<div class="card p-3">
+  <!-- <h4 class="mb-3">Tournament Form Çalışıyor!</h4> -->
+  <form (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="mb-3">
+      <label for="tournamentName" class="form-label">Turnuva Adı</label>
+      <input
+        type="text"
+        class="form-control"
+        id="tournamentName"
+        name="tournamentName"
+        placeholder="Turnuva adı giriniz"
+        [(ngModel)]="formModel.tournamentName"
+      >
+    </div>
+
+    <!-- Turnuva tipi: grup / eleme -->
+    <div class="mb-3">
+      <label class="form-label">Turnuva Tipi</label>
+      <div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="typeGroup"
+            name="tournamentType"
+            [(ngModel)]="formModel.tournamentType"
+            value="grup"
+          >
+          <label class="form-check-label" for="typeGroup">Grup</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="typeElimination"
+            name="tournamentType"
+            [(ngModel)]="formModel.tournamentType"
+            value="eleme"
+          >
+          <label class="form-check-label" for="typeElimination">Eleme</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Maç tipi: tek maç / çift maç -->
+    <div class="mb-3">
+      <label class="form-label">Maç Tipi</label>
+      <div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="matchSingle"
+            name="matchType"
+            [(ngModel)]="formModel.matchType"
+            value="tek"
+          >
+          <label class="form-check-label" for="matchSingle">Tek Maç</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="matchDouble"
+            name="matchType"
+            [(ngModel)]="formModel.matchType"
+            value="çift"
+          >
+          <label class="form-check-label" for="matchDouble">Çift Maç</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Averaj tipi: genel averaj / ikili averaj -->
+    <div class="mb-3">
+      <label class="form-label">Averaj Tipi</label>
+      <div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="averageGeneral"
+            name="averageType"
+            [(ngModel)]="formModel.averageType"
+            value="genel"
+          >
+          <label class="form-check-label" for="averageGeneral">Genel Averaj</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="averagePair"
+            name="averageType"
+            [(ngModel)]="formModel.averageType"
+            value="ikili"
+          >
+          <label class="form-check-label" for="averagePair">İkili Averaj</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grup sayısı (sadece grup seçiliyse) -->
+    <div class="mb-3" *ngIf="formModel.tournamentType === 'grup'">
+      <label for="groupCount" class="form-label">Grup Sayısı</label>
+      <input
+        type="number"
+        class="form-control"
+        id="groupCount"
+        name="groupCount"
+        min="2"
+        [(ngModel)]="formModel.groupCount"
+        placeholder="Grup sayısı giriniz"
+      >
+    </div>
+
+    <!-- Katılımcılar -->
+    <div class="mb-3">
+      <label class="form-label d-flex justify-content-between align-items-center">
+        <span class="d-flex align-items-center">
+          Katılımcılar <span class="text-secondary ms-1">({{ formModel.participants.length }})</span>
+          <button
+            type="button"
+            class="btn btn-link p-0 ms-2"
+            (click)="randomizeParticipantColors()"
+            title="Renkleri rastgele ata"
+            style="font-size:1.2em;"
+          >
+            <i class="bi bi-shuffle"></i>
+          </button>
+        </span>
+        <button
+          type="button"
+          class="btn btn-link p-0 ms-2"
+          (click)="clearParticipants()"
+          title="Tümünü temizle"
+        >
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+      </label>
+      <div
+        style="overflow-y: auto; max-height: 30vh;"
+      >
+        <div
+          *ngFor="let participant of formModel.participants; let i = index; trackBy: trackByIndex"
+          class="input-group mb-2"
+        >
+          <input
+            type="color"
+            class="form-control form-control-color"
+            [(ngModel)]="participant.color"
+            [name]="'participantColor' + i"
+            style="max-width: 48px;"
+            (change)="onParticipantColorChange(i, participant.color)"
+          >
+          <input
+            type="text"
+            class="form-control"
+            [placeholder]="'Katılımcı ' + (i + 1)"
+            [value]="participant.name"
+            readonly
+          >
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            (click)="removeParticipant(i)"
+            tabindex="-1"
+          >
+            <span class="fw-bold">-</span>
+          </button>
+        </div>
+      </div>
+      <div class="input-group mt-2">
+        <input
+          type="color"
+          class="form-control form-control-color"
+          [(ngModel)]="newParticipantColor"
+          name="newParticipantColor"
+          style="max-width: 48px;"
+        >
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Yeni katılımcı ekle"
+          [(ngModel)]="newParticipantName"
+          name="newParticipantName"
+          (keydown.enter)="onParticipantEnter(); $event.preventDefault();"
+          #participantInput
+          autocomplete="off"
+        >
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="addParticipant()"
+          tabindex="-1"
+        >
+          <span class="fw-bold">+</span>
+        </button>
+      </div>
+      <div *ngIf="participantNameExists" class="text-danger small mt-1">
+        Bu isimde bir katılımcı zaten var.
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="btn d-flex justify-content-center align-items-center"
+      style="width: 100%; background-color: rgb(227,79,79); color: #fff; height: 32px; font-weight: 500;"
+    >
+      Kaydet
+    </button>
+  </form>
+</div>

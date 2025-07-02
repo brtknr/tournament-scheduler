@@ -1,0 +1,17 @@
+/* Basit örnek stil */
+.card {
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+/* group-table için flag yerine renk kutusu */
+.team-flag {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  margin-right: 8px;
+  border: 1px solid #ddd;
+  vertical-align: middle;
+  background: #eee; /* fallback */
+}

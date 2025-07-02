@@ -1,0 +1,38 @@
+<div class="table-responsive">
+  <table class="league-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Takım</th>
+        <th>O</th>
+        <th>G</th>
+        <th>B</th>
+        <th>M</th>
+        <th>A</th>
+        <th>Y</th>
+        <th>AV</th>
+        <th>P</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let team of sortedParticipants; let i = index; trackBy: trackByTeam"
+          [@rowMove]>
+        <td>{{ i + 1 }}</td>
+        <td class="team-name">
+          <span class="team-flag" [style.background]="team.color"></span>
+          {{ team.name }}
+        </td>
+        <td>{{ team.matchesPlayed }}</td>
+        <td>{{ team.wins }}</td>
+        <td>{{ team.draws }}</td>
+        <td>{{ team.losses }}</td>
+        <td>{{ team.goalsFor }}</td>
+        <td>{{ team.goalsAgainst }}</td>
+        <td>{{ team.generalAverage }}</td>
+        <td class="fw-bold text-danger">{{ team.points }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <button class="btn btn-success btn-sm w-100 mt-2" (click)="saveScores()">Skorları Kaydet</button>
+</div>
+
