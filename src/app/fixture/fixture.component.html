@@ -1,13 +1,30 @@
-<div class="card p-4 mb-4" style="max-width: 600px; margin: 24px auto 0 auto;">
+<div class="card p-4 mb-2" style="max-width: 600px; margin: 5px auto 0 auto;">
   <h3 class="mb-3 text-center">
     {{ tournament?.tournamentName || 'Fikstür Ekranı' }}
   </h3>
-  <p class="text-center text-muted">Burada turnuva fikstürü ve maçlar listelenecek.</p>
+  <div *ngIf="tournament" class="d-flex flex-wrap justify-content-center gap-2 mb-2">
+    <span class="badge bg-success">
+      {{ tournament.participants?.length }} Katılımcı
+    </span>
+    <span class="badge bg-info text-dark">
+      {{ tournament.tournamentType === 'grup' ? 'Grup' : 'Eleme' }} Tipi
+    </span>
+    <span class="badge bg-warning text-dark">
+      {{ tournament.matchType === 'tek' ? 'Tek Maç' : 'Çift Maç' }}
+    </span>
+    <span class="badge bg-secondary text-dark">
+      {{ tournament.averageType === 'genel' ? 'Genel Averaj' : 'İkili Averaj' }}
+    </span>
+    <span class="badge bg-light text-dark border">
+      {{ tournament.createdAt | date:'dd.MM.yyyy HH:mm' }}
+    </span>
+  </div>
+  <!-- <p class="text-center text-muted">Burada turnuva fikstürü ve maçlar listelenecek.</p> -->
 </div>
 <div *ngIf="tournament && tournament.tournamentType === 'grup'">
   <div *ngFor="let groupName of (groups | keyvalue)">
     <div class="d-flex justify-content-center mb-4 w-100" style="max-width: 1200px; margin-left: auto; margin-right: auto;">
-      <div class="card p-3 d-flex flex-row justify-content-center align-items-start w-100" style="max-width: 1100px;">
+      <div class="card p-1 d-flex flex-row justify-content-center align-items-start w-100" style="max-width: 1100px;">
         <div style="width: 60%; min-width: 220px; overflow-x: auto;">
          <h5 class="mb-3">{{ groupName.key }} - Puan Tablosu</h5>
         <app-group-table
