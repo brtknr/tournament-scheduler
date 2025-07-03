@@ -94,6 +94,9 @@ export class GroupTableComponent implements OnInit {
     this.cdr.detectChanges();
 
     this.save.emit();
+
+    // turnuva skorları güncellendiğinde diğer componentlere haber ver
+    window.dispatchEvent(new Event('tournamentsChanged'));
   }
 
   getSortedParticipants(): ParticipantModel[] {
