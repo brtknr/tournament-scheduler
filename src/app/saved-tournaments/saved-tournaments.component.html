@@ -8,6 +8,7 @@
       <div
         *ngFor="let t of tournaments"
         class="list-group-item list-group-item-action flex-column align-items-start"
+        [ngClass]="{'active bg-primary text-white border-primary': t.id === selectedTournamentId}"
         style="position: relative;"
       >
         <div class="d-flex w-100 justify-content-between align-items-center">
@@ -27,10 +28,10 @@
           </div>
         </div>
         <div class="mb-1">
-          <span class="badge bg-success me-1">{{ t.participants?.length }} Katılımcı</span>
+          <span class="badge bg-secondary me-1">{{ t.participants?.length }} Katılımcı</span>
           <span class="badge bg-info text-dark me-1">{{ t.tournamentType }}</span>
           <span class="badge bg-warning text-dark me-1">{{ t.matchType }} maç</span>
-          <span class="badge bg-secondary text-dark">{{ t.averageType }} averaj</span>
+          <span class="badge bg-success text-dark">{{ t.averageType }}</span>
         </div>
         <button
           class="stretched-link"

@@ -8,22 +8,35 @@ import { Router } from '@angular/router';
 })
 export class SavedTournamentsComponent implements OnInit {
   tournaments: any[] = [];
+  selectedTournamentId: number | null = null;
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadTournaments();
+    this.setSelectedTournamentFromStorage();
 
     // Kendi sekmesinde eklenirse de güncellenmesi için
     window.addEventListener('storage', () => {
       this.loadTournaments();
-      this.cdr.detectChanges();
+      this.setSelectedTournamentFromStorage();
     });
 
     // Turnuva eklendiğinde diğer componentlerden tetiklenmesi için custom event dinle
     window.addEventListener('tournamentsChanged', () => {
       this.loadTournaments();
       this.cdr.detectChanges();
+    });
+
+    // Route değişimini dinle, eğer fixture dışında bir sayfadaysa seçimi kaldır
+    this.router.events.subscribe(event => {
+      // NavigationEnd import edilmeli: import { NavigationEnd } from '@angular/router';
+      if (event.constructor.name === 'NavigationEnd') {
+        if (!this.router.url.includes('/fixture')) {
+          this.selectedTournamentId = null;
+          this.cdr.detectChanges();
+        }
+      }
     });
   }
 
@@ -37,11 +50,26 @@ export class SavedTournamentsComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  showFixture(tournament: any) {
-    localStorage.setItem('tournament', JSON.stringify(tournament));
+  showFixture(t: any) {
+    this.selectedTournamentId = t.id;
+    localStorage.setItem('tournament', JSON.stringify(t));
     // Fikstür componentinin tekrar yüklenmesini sağlamak için custom event tetikle
     window.dispatchEvent(new Event('tournamentChanged'));
     this.router.navigate(['/fixture']);
+  }
+
+  setSelectedTournamentFromStorage() {
+    const data = localStorage.getItem('tournament');
+    if (data) {
+      try {
+        const t = JSON.parse(data);
+        this.selectedTournamentId = t?.id ?? null;
+      } catch {
+        this.selectedTournamentId = null;
+      }
+    } else {
+      this.selectedTournamentId = null;
+    }
   }
 
   deleteTournament(id: number, event: Event) {

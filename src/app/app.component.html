@@ -1,42 +1,61 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" style="cursor:pointer;" routerLink="/">Tournament Scheduler</a>
-  </div>
-</nav>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournament Scheduler</title>
+  <link href="https://fonts.cdnfonts.com/css/libertinus-mono" rel="stylesheet">
+  <style>
+    body, html, .app-root, .container-fluid, .card, .btn, .form-control, .navbar, .league-table, .list-group, .badge {
+      font-family: 'Libertinus Mono', monospace !important;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold d-flex align-items-center" style="cursor:pointer;" routerLink="/">
+        <img src="https://cdn-icons-png.flaticon.com/512/3112/3112946.png" alt="logo" width="32" height="32" style="margin-right:10px;">
+        Tournament Scheduler
+      </a>
+    </div>
+  </nav>
 
-<div class="d-flex justify-content-center align-items-start" style="position: relative; zoom: 1.25;">
-  <div class="flex-grow-1 d-flex justify-content-center">
-    <div
-      class="mx-auto"
-      style="width: 100%; max-width: 850px; height: calc(100vh - 300px); overflow-y: auto;"
+  <div class="d-flex justify-content-center align-items-start" style="position: relative; zoom: 1.25;">
+    <div class="flex-grow-1 d-flex justify-content-center">
+      <div
+        class="mx-auto"
+        style="width: 100%; max-width: 850px; height: calc(100vh - 300px); overflow-y: auto;"
+      >
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+    <button
+      id="sidenavToggle"
+      class="btn btn-outline-secondary"
+      style="position: fixed; top: 90px; right: 0; z-index: 1051; border-top-right-radius: 0; border-bottom-right-radius: 0;"
+      (click)="showSidenav = !showSidenav"
+      type="button"
     >
-      <router-outlet></router-outlet>
+      <i class="bi" [ngClass]="showSidenav ? 'bi-x-lg' : 'bi-list'"></i> Kayitli Turnuvalar
+    </button>
+    <div
+      class="bg-white shadow"
+      [ngStyle]="{
+        position: 'fixed',
+        top: '90px',
+        right: showSidenav ? '0' : '-370px',
+        width: '350px',
+        height: 'calc(100vh - 100px)',
+        transition: 'right 0.3s',
+        zIndex: 1050,
+        borderTopLeftRadius: '8px',
+        borderBottomLeftRadius: '8px',
+        overflowY: 'auto'
+      }"
+    >
+      <app-saved-tournaments></app-saved-tournaments>
     </div>
   </div>
-  <button
-    id="sidenavToggle"
-    class="btn btn-outline-secondary"
-    style="position: fixed; top: 90px; right: 0; z-index: 1051; border-top-right-radius: 0; border-bottom-right-radius: 0;"
-    (click)="showSidenav = !showSidenav"
-    type="button"
-  >
-    <i class="bi" [ngClass]="showSidenav ? 'bi-x-lg' : 'bi-list'"></i> Kayitli Turnuvalar
-  </button>
-  <div
-    class="bg-white shadow"
-    [ngStyle]="{
-      position: 'fixed',
-      top: '90px',
-      right: showSidenav ? '0' : '-370px',
-      width: '350px',
-      height: 'calc(100vh - 100px)',
-      transition: 'right 0.3s',
-      zIndex: 1050,
-      borderTopLeftRadius: '8px',
-      borderBottomLeftRadius: '8px',
-      overflowY: 'auto'
-    }"
-  >
-    <app-saved-tournaments></app-saved-tournaments>
-  </div>
-</div>
+</body>
+</html>

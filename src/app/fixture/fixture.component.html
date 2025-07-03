@@ -1,10 +1,20 @@
 <div class="card p-4 mb-2" style="max-width: 600px; margin: 5px auto 0 auto;">
-  <h3 class="mb-3 text-center">
-    {{ tournament?.tournamentName || 'Fikstür Ekranı' }}
-  </h3>
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h3 class="mb-0 text-center flex-grow-1">
+      {{ tournament?.tournamentName || 'Fikstür Ekranı' }}
+    </h3>
+    <div class="ms-2 d-flex gap-2">
+      <button class="btn btn-outline-primary btn-sm" (click)="exportCSV()" title="CSV olarak dışa aktar">
+        <i class="bi bi-filetype-csv"></i> CSV
+      </button>
+      <button class="btn btn-outline-success btn-sm" (click)="exportExcel()" title="Excel olarak dışa aktar">
+        <i class="bi bi-file-earmark-excel"></i> Excel
+      </button>
+    </div>
+  </div>
   <div *ngIf="tournament" class="d-flex flex-wrap justify-content-center gap-2 mb-2">
     <span class="badge bg-success">
-      {{ tournament.participants?.length }} Katılımcı
+      {{ tournament.participants.length }} Katılımcı
     </span>
     <span class="badge bg-info text-dark">
       {{ tournament.tournamentType === 'grup' ? 'Grup' : 'Eleme' }} Tipi
@@ -37,7 +47,7 @@
         <div style="width: 40%; min-width: 220px; overflow-y: auto; max-height: 400px;">
           <h5 class="mb-3">{{ groupName.key }} Fikstür</h5>
           <ng-container *ngIf="groupedFixtures[groupName.key]">
-            <div *ngFor="let round of (groupedFixtures[groupName.key] | keyvalue : sortByRound)">
+            <div *ngFor="let round of (groupedFixtures[groupName.key] | keyvalue : sortByRound); let last = last">
               <div class="mb-3">
                 <div class="fw-bold text-primary mb-2 text-center">{{ round.key }}. Hafta</div>
                 <div 
@@ -80,6 +90,7 @@
                   </div>
                 </div>
               </div>
+              <hr *ngIf="!last" class="my-2" />
             </div>
           </ng-container>
         </div>
