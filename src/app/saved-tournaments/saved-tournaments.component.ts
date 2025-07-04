@@ -1,6 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 
+declare const alertify: any;
+
 @Component({
   selector: 'app-saved-tournaments',
   templateUrl: './saved-tournaments.component.html',
@@ -76,15 +78,26 @@ export class SavedTournamentsComponent implements OnInit {
     event.stopPropagation();
     const idx = this.tournaments.findIndex(t => t.id === id);
     if (idx > -1) {
-      const deleted = this.tournaments.splice(idx, 1)[0];
-      localStorage.setItem('tournaments', JSON.stringify(this.tournaments));
-      // Eğer silinen turnuva aktifse, localStorage'daki 'tournament'ı da temizle
-      const active = localStorage.getItem('tournament');
-      if (active && deleted && JSON.parse(active).id === deleted.id) {
-        localStorage.removeItem('tournament');
-        window.dispatchEvent(new Event('tournamentChanged')); // Fixture componentine haber ver
-      }
-      this.cdr.detectChanges();
+      alertify.confirm(
+        'Turnuva Sil',
+        'Bu turnuvayı silmek istediğinize emin misiniz?',
+        () => {
+          const deleted = this.tournaments.splice(idx, 1)[0];
+          localStorage.setItem('tournaments', JSON.stringify(this.tournaments));
+          // Eğer silinen turnuva aktifse, localStorage'daki 'tournament'ı da temizle
+          const active = localStorage.getItem('tournament');
+          if (active && deleted && JSON.parse(active).id === deleted.id) {
+            localStorage.removeItem('tournament');
+            window.dispatchEvent(new Event('tournamentChanged')); // Fixture componentine haber ver
+            this.router.navigate(['/']); // Ana sayfaya yönlendir
+          }
+          this.cdr.detectChanges();
+          alertify.success('Turnuva silindi');
+        },
+        () => {
+          alertify.error('Silme işlemi iptal edildi');
+        }
+      );
     }
   }
 }

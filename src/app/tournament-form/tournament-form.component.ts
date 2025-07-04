@@ -234,25 +234,85 @@ export class TournamentFormComponent {
       });
     });
 
-    // Çift maç ise ikinci yarı ters eşleşmeleri ekle
+    // Çift maç ise: her ilk yarı maçının simetriği, (hafta + totalRounds) olarak ve ev/deplasman ters olarak eklenir
     if (matchType === 'çift') {
-      for (let r = 0; r < rounds.length; r++) {
-        const reverseMatches = rounds[r].map(pair => ({ home: pair.away, away: pair.home }));
-        reverseMatches.forEach(pair => {
-          matches.push({
-            id: matchId++,
-            tournamentId,
-            homeTeamId: pair.home,
-            awayTeamId: pair.away,
-            round: rounds.length + r + 1,
-            homeScore: null,
-            awayScore: null,
-            date: new Date()
-          });
+      const firstHalfMatches = matches.filter(m => m.round <= totalRounds);
+      firstHalfMatches.forEach(m => {
+        matches.push({
+          id: matchId++,
+          tournamentId,
+          homeTeamId: m.awayTeamId,
+          awayTeamId: m.homeTeamId,
+          round: m.round + totalRounds,
+          homeScore: null,
+          awayScore: null,
+          date: new Date()
         });
+      });
+
+      // İlk yarıda (totalRounds kadar hafta) hiçbir takım üst üste 3 iç/dış saha oynamasın
+      const participantIds = participants.map(p => p.id);
+      const firstHalfRounds: { [round: number]: MatchModel[] } = {};
+      matches.filter(m => m.round <= totalRounds).forEach(m => {
+        if (!firstHalfRounds[m.round]) firstHalfRounds[m.round] = [];
+        firstHalfRounds[m.round].push(m);
+      });
+
+      // Her takım için ilk yarı home/away geçmişini oluştur
+      const teamHomeAway: { [id: number]: string[] } = {};
+      participantIds.forEach(id => teamHomeAway[id] = []);
+      for (let r = 1; r <= totalRounds; r++) {
+        for (const match of firstHalfRounds[r] || []) {
+          teamHomeAway[match.homeTeamId].push('H');
+          teamHomeAway[match.awayTeamId].push('A');
+        }
       }
+
+      // Kontrol ve düzeltme işlemi
+      let changed = false;
+      do {
+        changed = false;
+        for (const id of participantIds) {
+          const arr = teamHomeAway[id];
+          for (let i = 0; i < arr.length - 2; i++) {
+            if (arr[i] === arr[i + 1] && arr[i] === arr[i + 2]) {
+              // Ortadaki maçın round ve home/away bilgisini bul
+              const roundIdx = i + 1;
+              const roundNum = roundIdx + 1;
+              const match = (firstHalfRounds[roundNum] || []).find(
+                m => m.homeTeamId === id || m.awayTeamId === id
+              );
+              if (match) {
+                // Home/away swap et
+                const tmp = match.homeTeamId;
+                match.homeTeamId = match.awayTeamId;
+                match.awayTeamId = tmp;
+                // Skorları da swap et (varsa)
+                if (typeof match.homeScore !== 'undefined' && typeof match.awayScore !== 'undefined') {
+                  const tmpScore = match.homeScore;
+                  match.homeScore = match.awayScore;
+                  match.awayScore = tmpScore;
+                }
+                // Home/away geçmişini güncelle
+                // Tüm geçmişi baştan oluştur
+                participantIds.forEach(pid => teamHomeAway[pid] = []);
+                for (let rr = 1; rr <= totalRounds; rr++) {
+                  for (const m of firstHalfRounds[rr] || []) {
+                    teamHomeAway[m.homeTeamId].push('H');
+                    teamHomeAway[m.awayTeamId].push('A');
+                  }
+                }
+                changed = true;
+                break;
+              }
+            }
+          }
+          if (changed) break;
+        }
+      } while (changed);
     }
 
     return matches;
   }
 }
+

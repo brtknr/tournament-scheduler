@@ -21,7 +21,10 @@
         <td style="padding: 0; vertical-align: middle; font-size: small;">
           <div style="display: flex; align-items: center; height: 32px; overflow: hidden;">
             <span class="team-flag" [style.background]="team.color" style="display:inline-block;width:16px;height:16px;border-radius:50%;margin-right:6px;flex-shrink:0;"></span>
-            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; max-width: 110px; font-size: small;">{{ team.name }}</span>
+            <span 
+              style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; max-width: 110px; font-size: small;"
+              [title]="team.name"
+            >{{ team.name }}</span>
           </div>
         </td>
         <td style="font-size: small;">{{ team.matchesPlayed }}</td>
@@ -30,7 +33,7 @@
         <td style="font-size: small;">{{ team.losses }}</td>
         <td style="font-size: small;">{{ team.goalsFor }}</td>
         <td style="font-size: small;">{{ team.goalsAgainst }}</td>
-        <td style="font-size: small;">{{ team.generalAverage }}</td>
+        <td style="font-size: small;">{{ team.goalsFor - team.goalsAgainst }}</td>
         <td class="fw-bold text-danger" style="font-size: small;">{{ team.points }}</td>
       </tr>
     </tbody>
