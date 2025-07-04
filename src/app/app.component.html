@@ -33,7 +33,7 @@
     </div>
     <button
       id="sidenavToggle"
-      class="btn btn-outline-secondary"
+      class="btn btn-outline-secondary bg-dark shadow text-white"
       style="position: fixed; top: 90px; right: 0; z-index: 1051; border-top-right-radius: 0; border-bottom-right-radius: 0;"
       (click)="showSidenav = !showSidenav"
       type="button"
@@ -41,7 +41,7 @@
       <i class="bi" [ngClass]="showSidenav ? 'bi-x-lg' : 'bi-list'"></i> Kayitli Turnuvalar
     </button>
     <div
-      class="bg-white shadow"
+      class="bg-dark shadow"
       [ngStyle]="{
         position: 'fixed',
         top: '90px',
